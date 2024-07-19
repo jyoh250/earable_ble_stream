@@ -1,0 +1,178 @@
+sudo /home/user/miniconda3/bin/python ./BLEApp.py --device_id EB_00068EF230224D --score_sleep
+2024-07-16 16:04:52.847274: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-07-16 16:04:52.847472: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-07-16 16:04:52.849512: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-07-16 16:04:52.876013: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-07-16 16:04:53.284581: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+Creating data recording object for ./experiment_data/1721167499.2648876.  Data will be saved to ././experiment_data/1721167499.2648876
+Connected: True
+Firmware version:  X8.2.2_0.9.09
+BLE COMMAND RESPONSE:  01:00:58:38:2e:32:2e:32:5f:30:2e:39:2e:30:39
+BLE COMMAND RESPONSE LENGTH:  44
+Start BLE Streaming
+BLE COMMAND RESPONSE:  07:00
+BLE COMMAND RESPONSE LENGTH:  5
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 1, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+166.0347864627838
+3753
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: Attempting to use a delegate that only supports static-sized tensors with a graph that has dynamic-sized tensors (tensor#40 is a dynamic-sized tensor).
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:63: RuntimeWarning: invalid value encountered in scalar divide
+  power = power/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:99: RuntimeWarning: invalid value encountered in scalar divide
+  power = simps(fft_datum[indice],freqs[indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:158: RuntimeWarning: invalid value encountered in scalar divide
+  slow_power = simps(fft_datum[slow_indice],freqs[slow_indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:161: RuntimeWarning: invalid value encountered in scalar divide
+  fast_power = simps(fft_datum[fast_indice],freqs[fast_indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:27: RuntimeWarning: invalid value encountered in divide
+  mag = mag/mag.sum(axis=1)[:,None]
+Sleep Stage Prediction: 2
+Sleep Stage Confidences: [0.06393185 0.00367818 0.10408808 0.00636539]
+
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+239.63652753829956
+7524
+Data saved
+CLOSING
+Stop BLE Streaming
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:63: RuntimeWarning: invalid value encountered in scalar divide
+  power = power/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:99: RuntimeWarning: invalid value encountered in scalar divide
+  power = simps(fft_datum[indice],freqs[indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:158: RuntimeWarning: invalid value encountered in scalar divide
+  slow_power = simps(fft_datum[slow_indice],freqs[slow_indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:161: RuntimeWarning: invalid value encountered in scalar divide
+  fast_power = simps(fft_datum[fast_indice],freqs[fast_indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:27: RuntimeWarning: invalid value encountered in divide
+  mag = mag/mag.sum(axis=1)[:,None]
+Sleep Stage Prediction: 2
+Sleep Stage Confidences: [0.02718236 0.00489688 0.14422047 0.00547604]
+
+239.75119304656982
+29394
+Sleep Stage Prediction: 0
+Sleep Stage Confidences: [0.671299   0.03951351 0.00926501 0.00867243]
+
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [1, 0, 1, 0]
+Client closed
+Stop BLE Streaming
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:63: RuntimeWarning: invalid value encountered in scalar divide
+  power = power/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:99: RuntimeWarning: invalid value encountered in scalar divide
+  power = simps(fft_datum[indice],freqs[indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:158: RuntimeWarning: invalid value encountered in scalar divide
+  slow_power = simps(fft_datum[slow_indice],freqs[slow_indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:161: RuntimeWarning: invalid value encountered in scalar divide
+  fast_power = simps(fft_datum[fast_indice],freqs[fast_indice])/total_pow
+/home/user/band/Earable/earable_ble_stream-main/utils/feature_extraction.py:27: RuntimeWarning: invalid value encountered in divide
+  mag = mag/mag.sum(axis=1)[:,None]
+Sleep Stage Prediction: 2
+Sleep Stage Confidences: [0.02718236 0.00489688 0.14422047 0.00547604]
+
+239.75119304656982
+29394
+Sleep Stage Prediction: 0
+Sleep Stage Confidences: [0.671299   0.03951351 0.00926501 0.00867243]
+
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [1, 0, 1, 0]
+Client closed
+^CExiting...
+CLOSING
+Exception ignored in: <module 'threading' from '/home/user/miniconda3/lib/python3.11/threading.py'>
+Traceback (most recent call last):
+  File "/home/user/miniconda3/lib/python3.11/threading.py", line 1583, in _shutdown
+Stop BLE Streaming
+    lock.acquire()
+  File "/home/user/band/Earable/earable_ble_stream-main/./BLEApp.py", line 151, in exit_signal_handler
+    sys.exit(0)
+SystemExit: 0
+user@ROG-Strix:~/band/Earable/earable_ble_stream-main$ sudo /home/user/miniconda3/bin/python -W ignore ./BLEApp.py --device_id EB_00068EF230224D --score_sleep 
+2024-07-16 22:07:34.870229: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-07-16 22:07:34.870432: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-07-16 22:07:34.872727: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-07-16 22:07:34.900024: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-07-16 22:07:35.306519: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+Creating data recording object for ./experiment_data/1721189261.2162848.  Data will be saved to ././experiment_data/1721189261.2162848
+Connected: True
+Firmware version:  X8.2.2_0.9.09
+BLE COMMAND RESPONSE:  01:00:58:38:2e:32:2e:32:5f:30:2e:39:2e:30:39
+BLE COMMAND RESPONSE LENGTH:  44
+BLE COMMAND RESPONSE:  07:00
+BLE COMMAND RESPONSE LENGTH:  5
+Start BLE Streaming
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+193.65547347068787
+1251
+INFO: Created TensorFlow Lite XNNPACK delegate for CPU.
+WARNING: Attempting to use a delegate that only supports static-sized tensors with a graph that has dynamic-sized tensors (tensor#40 is a dynamic-sized tensor).
+Fatigue Stage Prediction: 2
+Fatigue Stage Confidences: [0.18404037 0.00188792 0.21562505 0.00266095]
+
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+425.21065163612366
+2502
+Fatigue Stage Prediction: 0
+Fatigue Stage Confidences: [0.19589914 0.00291235 0.17162527 0.00363578]
+
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+63.1326632499695
+3762
+Fatigue Stage Prediction: 0
+Fatigue Stage Confidences: [0.18386438 0.00678244 0.06665131 0.00223197]
+
+463.2193465232849
+23220
+Fatigue Stage Prediction: 0
+Fatigue Stage Confidences: [0.17348516 0.00559215 0.10969288 0.00325561]
+
+463.3192386627197
+48114
+Data saved
+CLOSING
+Fatigue Stage Prediction: 2
+Fatigue Stage Confidences: [0.08674412 0.02307526 0.38610098 0.00832647]
+
+463.4212296009064
+56871
+Stop BLE Streaming
+Fatigue Stage Prediction: 0
+Fatigue Stage Confidences: [0.31166202 0.22022298 0.02953872 0.03223565]
+
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [1, 0, 1, 0]
+Client closed
+

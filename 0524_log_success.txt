@@ -1,0 +1,64 @@
+(earable_main_venv) (band) user@ROG-Strix:~/band/Earable/earable_ble_stream-main$ sudo /home/user/miniconda3/bin/python ./BLEApp.py --device_id EB_00068EF230224D
+2024-05-24 15:21:13.139242: I tensorflow/core/util/port.cc:113] oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders. To turn them off, set the environment variable `TF_ENABLE_ONEDNN_OPTS=0`.
+2024-05-24 15:21:13.139409: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-05-24 15:21:13.141267: I external/local_tsl/tsl/cuda/cudart_stub.cc:32] Could not find cuda drivers on your machine, GPU will not be used.
+2024-05-24 15:21:13.165874: I tensorflow/core/platform/cpu_feature_guard.cc:210] This TensorFlow binary is optimized to use available CPU instructions in performance-critical operations.
+To enable the following instructions: AVX2 AVX512F AVX512_VNNI FMA, in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2024-05-24 15:21:13.590025: W tensorflow/compiler/tf2tensorrt/utils/py_utils.cc:38] TF-TRT Warning: Could not find TensorRT
+/home/user/band/Earable/earable_ble_stream-main/BLEScan.py:11: FutureWarning: The discover function will removed in a future version, use BleakScanner.discover instead.
+  devices = await discover()
+Creating data recording object for ./experiment_data/1716585679.453176.  Data will be saved to ././experiment_data/1716585679.453176
+Connected: True
+Start BLE Streaming
+Firmware version:  X8.2.2_0.9.09
+BLE COMMAND RESPONSE:  01:00:58:38:2e:32:2e:32:5f:30:2e:39:2e:30:39
+BLE COMMAND RESPONSE LENGTH:  44
+BLE COMMAND RESPONSE:  07:00
+BLE COMMAND RESPONSE LENGTH:  5
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 1, 1]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 1, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 1, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 1, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 0, 0, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [0, 1, 1, 0]
+Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [1, 0, 1, 0]
+^CExiting...
+Data saved
+CLOSING
+Stop BLE Streaming
+BLE COMMAND RESPONSE:  03:00
+BLE COMMAND RESPONSE LENGTH:  5
+Client closed
+^CExiting...
+CLOSING
+Exception ignored in: <module 'threading' from '/home/user/miniconda3/lib/python3.11/threading.py'>
+Traceback (most recent call last):
+  File "/home/user/miniconda3/lib/python3.11/threading.py", line 1583, in _shutdown
+    lock.acquire()
+  File "/home/user/band/Earable/earable_ble_stream-main/./BLEApp.py", line 151, in exit_signal_handler
+    sys.exit(0)
+SystemExit: 0
+

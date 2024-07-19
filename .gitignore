@@ -1,0 +1,7 @@
+/data/*
+/experiment_data/*
+/focus/MRT/data/*
+**/.DS_Store
+**/.ipynb_checkpoints
+**/__pycache__
+test.py
