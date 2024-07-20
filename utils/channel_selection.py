@@ -14,20 +14,30 @@ def compute_band_power_information(datum, fs):
         fs (int): sampling rate of data
     output:
         bp (np.ndarray): bandpowers in the 0.5-4, 8-13, 13-35, and 35-100 Hz frequency ranges
+                                           Delta, Alpha, Beta, High Gamma 
         bp_rel (np.ndarray): normalized bandpowers in the 0.5-4, 4-8, 13-35, and 35-100 Hz frequency ranges
     '''
     bands = [[0.5,4],[8,13],[13,35],[35,100]]
 
     freq_low = 0.5
     freq_high = 100
-
+    # compute the power spectral density
+    # using the fast fourier transform
     fft_datum = np.abs(fft(datum))
+    # get the frequencies
+    # the frequencies are in the range of 0 to fs
     freqs = fftfreq(len(datum),1/fs)
+    # only taking the positive frequencies
+    # because the negative frequencies are just the complex conjugate of the positive frequencies
+    # so we can just ignore them
+    # and we only care about the positive frequencies
     indice = np.bitwise_and(freqs<=(fs/2.), freqs>=0)
     fft_datum = fft_datum[indice]
     freqs = freqs[indice]
+    # compute the total power
     total_pow = simps(fft_datum,freqs)
-    
+    # if the total power is zero
+    # then we can't compute the relative bandpowers
     if np.allclose(total_pow, 0):
         return [0,0,0,0], [0,0,0,0]
 

@@ -176,3 +176,5 @@ BLE COMMAND RESPONSE LENGTH:  5
 Signal Qualities [LF5, RF6, OTEL, OTER] (1: OK, 0: Bad): [1, 0, 1, 0]
 Client closed
 
+
+sudo /home/user/miniconda3/bin/python -W ignore ./BLEApp.py --device_id EB_00068EF230224D --score_sleep 

@@ -33,10 +33,15 @@ def short_term_sqc(sqc_window_stride_s=3, sqc_window_len_s=3):
     rf6_signal_quality = 0
     otel_signal_quality = 0
     oter_signal_quality = 0
-    
+    # check data size? what is included and what is not, 4ch EEG and timestamps?
+    # eeg_sampling_rate = 250, experiment.eeg_data_size = 1000
+    # self.eeg_data = np.memmap(os.path.join(self.experiment_id, 'eeg.dat'), dtype=np.float64, mode='w+', \
+    #   shape=(int(eeg_sampling_rate*max_streaming_time_s),num_eeg_channels)), eeg_sampling_rate*max_streaming_time_s = 250*3600 = 900,000
+    # max_streaming_time_s = 3600, int(60*60*1), num_eeg_channels = 6
+
     old_sqc_data_len = experiment.eeg_data_size
     while data_is_processing:
-        new_sqc_samples = experiment.eeg_data_size - old_sqc_data_len
+        new_sqc_samples = experiment.eeg_data_size - old_sqc_data_len 
         # Perform Signal Quality Analysis
         if (new_sqc_samples >= int(sqc_window_stride_s*eeg_sampling_rate)) and (experiment.eeg_data_size >= int(sqc_window_len_s*eeg_sampling_rate)):
             lf5_window = np.array(experiment.eeg_data[experiment.eeg_data_size-int(sqc_window_len_s*eeg_sampling_rate):experiment.eeg_data_size,0])
