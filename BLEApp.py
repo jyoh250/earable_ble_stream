@@ -112,6 +112,9 @@ def ble_initializer(address):
 def switch_eeg_channel(event):
     global eeg_channel_index
     eeg_channel_index = (eeg_channel_index+1)%num_eeg_channels
+    #  skip channel 2 and 5
+    if eeg_channel_index == 2 or eeg_channel_index == 5:
+        eeg_channel_index = (eeg_channel_index+1)%num_eeg_channels
     
 def exit_signal_handler(sig, frame):
     global expected_sequence_number, DATA_SAVED
@@ -264,6 +267,12 @@ if __name__== '__main__':
                     
             if VISUALIZATION_ON:
                 # Get collection of user events to display
+                # get the current time
+                # get the packet timestamp
+                # get the recent events from the experiment object
+                # if the recent events is not empty, get the recent events that are within the visualization_timescale
+                # get the recent event indices
+                # recent_event_inds is the recent event indices
                 plotting_time = pc_packet_timestamp
                 recent_events = np.array(experiment.event_timestamps)
                 if len(recent_events) > 0:
@@ -278,6 +287,7 @@ if __name__== '__main__':
                     data_for_filtering = np.array(channel_data)
                 else:
                     data_for_filtering = np.vstack([data_for_filtering, np.array(channel_data)])
+                #  whay 9? because the data_for_filtering is the data that is collected from the EEG device
                 if data_for_filtering.shape[0] > 9:
                     for channel_i in range(num_eeg_channels):
                         filtered_data[channel_i] += list(eeg_channel_filters[channel_i].filter_data(data_for_filtering[:,channel_i]))
