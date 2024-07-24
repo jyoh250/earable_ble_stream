@@ -82,11 +82,9 @@ def score_sleep():
             old_exg_data_len = experiment.eeg_data_size
             lf5_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,0])
             otel_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,1])
-            # remove bel_epoch, and ber_epoch
             bel_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,2])
             rf6_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,3])
             oter_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,4])
-            # remove bel_epoch, and ber_epoch
             ber_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,5])
             inferred_sleep_stage, aggregated_sleep_stage_confs = scorer.score_epoch(lf5_epoch, otel_epoch, bel_epoch,\
                                                                                     rf6_epoch, oter_epoch, ber_epoch, eeg_sampling_rate)
@@ -244,13 +242,9 @@ if __name__== '__main__':
             continue
         else:
             # Get oldest, unprocessed binary packet data and process it
-            # size of packet_data = 24, seq_num = 1, num_eeg_channels = 6, timestamp = 4, 6*3bytes = 18 => 24 bytes
-            # the packet_data is the raw data from the EEG device
             packet_data = Ble_stack.raw_eeg_data.pop(0)
             pc_packet_timestamp = Ble_stack.raw_eeg_pc_timestamps.pop(0)
             timestamp, seq_num, channel_data = Ble_stack.get_data_from_eeg_binary_packet(packet_data)
-            # channel_data is the EEG data from the EEG device, and 18bytes of data
-            # why seq_num+1%256: because the seq_num is 0-255, so the next seq_num is 1-256
             if expected_sequence_number is None:
                 experiment.add_eeg_data(channel_data, pc_packet_timestamp, timestamp)
                 expected_sequence_number = (seq_num+1)%256
