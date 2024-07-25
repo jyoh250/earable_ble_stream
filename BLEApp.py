@@ -75,8 +75,11 @@ def short_term_sqc(sqc_window_stride_s=3, sqc_window_len_s=3):
 def score_sleep():
     t0 = time.time()
     scorer = AutoSleepScoring()
+    # eeg_sampling_rate = 250, 10*250 = 2500
     samples_per_epoch = int(10*eeg_sampling_rate)
+    # eeg_data_size = 693...., 1000
     old_exg_data_len = experiment.eeg_data_size
+    print('Scoring sleep stages...')
     while data_is_processing:
         new_exg_samples = experiment.eeg_data_size - old_exg_data_len
         if (new_exg_samples >= samples_per_epoch):
@@ -225,11 +228,11 @@ if __name__== '__main__':
     init_thread.start()
     
     # Start signal quality check thread
-    sqc_thread = threading.Thread(name='signal_quality_check', target=short_term_sqc)
-    sqc_thread.start()
+    # sqc_thread = threading.Thread(name='signal_quality_check', target=short_term_sqc)
+    # sqc_thread.start()
     
     # Start any specified applications
-    sleep_scoring_thread = None
+    # sleep_scoring_thread = None
     # smart_alarm_thread = None
     # if args.smart_alarm:
     #     args.score_sleep = True
