@@ -11,7 +11,8 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "args": ["--device_id", "EB_00068EF230224D", "--score_sleep"],
-            "sudo": true
+            "sudo": true,
+            "env": {"DISPLAY":"localhost:10.0"}
         }
     ]
 }

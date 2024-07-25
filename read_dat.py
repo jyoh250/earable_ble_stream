@@ -7,7 +7,7 @@ import mmap
 import csv
 
 #file_path = 'experiment_data/5m-music-5m-typing/eeg.dat'
-file_path = 'experiment_data/1716587413.4813533/eeg.dat'
+file_path = 'experiment_data/1721848945.102753/eeg.dat'
  
 with open(file_path, 'r') as file:
     mm = np.memmap(file,  dtype=np.float64,mode = 'r')
@@ -21,7 +21,7 @@ with open(file_path, 'r') as file:
     # display data size and type of mm
     print(mm.shape)
     print(mm.size)
-    print(mm)
+    print(mm[0:18])
     
 
 # data = load('experiment_data/5m-music-5m-typing/eeg.dat' , allow_pickle=True)
