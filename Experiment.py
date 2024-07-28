@@ -44,6 +44,14 @@ class Experiment():
         self.event_timestamps = []
 
     def add_eeg_data(self, data, pc_timestamp, timestamp):
+        # why *08?
+        # 1. if the data size is greater than 80% of the allocated memory, then double the memory
+        # 2. add the new data to the eeg_data
+        # 3. update the eeg_data_size
+        # 4. append the pc_timestamp to eeg_packetread_timestamps
+        # 5. append the timestamp to eeg_fw_packet_timestamps
+        # 6. append the number of samples in the packet to eeg_sampled_per_packet
+        # 7. return
         if self.eeg_data_size >= int(self.eeg_data.shape[0]*0.8):
             self.eeg_data.flush()
             old_length = self.eeg_data.shape[0]

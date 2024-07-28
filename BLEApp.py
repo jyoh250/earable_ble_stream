@@ -43,11 +43,20 @@ def short_term_sqc(sqc_window_stride_s=3, sqc_window_len_s=3):
     while data_is_processing:
         new_sqc_samples = experiment.eeg_data_size - old_sqc_data_len 
         # Perform Signal Quality Analysis
+        # if the number of new samples is greater than the window stride, and the total number of samples is greater than the window length
+        # then get the last window of data, preprocess it, and check the signal quality
+        # if the signal quality is bad, then set the signal quality to 0, otherwise set it to 1
+        # print the signal qualities
         if (new_sqc_samples >= int(sqc_window_stride_s*eeg_sampling_rate)) and (experiment.eeg_data_size >= int(sqc_window_len_s*eeg_sampling_rate)):
             lf5_window = np.array(experiment.eeg_data[experiment.eeg_data_size-int(sqc_window_len_s*eeg_sampling_rate):experiment.eeg_data_size,0])
             lf5_window = lf5_window-np.mean(lf5_window)
             lf5_window = preprocess_sqc_data(base_filter(lf5_window, eeg_sampling_rate), eeg_sampling_rate)
-
+            # if the signal is noisy or the absolute value of the signal is greater than 100, then set the signal quality to 0, otherwise set it to 1
+            # lf5_signal_quality = 0 if (is_signal_noisy(lf5_window, eeg_sampling_rate) or np.any(np.abs(lf5_window > 100))) else 1
+            #  why signal quality is set to 0 if the signal is noisy or the absolute value of the signal is greater than 100?
+            # data_size: the array size of collected signal data
+            #  rf6_windws: the last window of data for rf6
+            # 
             rf6_window = np.array(experiment.eeg_data[experiment.eeg_data_size-int(sqc_window_len_s*eeg_sampling_rate):experiment.eeg_data_size,3])
             rf6_window = rf6_window-np.mean(rf6_window)
             rf6_window = preprocess_sqc_data(base_filter(rf6_window, eeg_sampling_rate), eeg_sampling_rate)
