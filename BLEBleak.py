@@ -10,6 +10,9 @@ from bleak.backends.service import BleakGATTServiceCollection
 starttime = None
 counter = 0
 
+# A Universally Unique Identifier (UUID) is a globally unique 128-bit (16-byte) number 
+# that is used to identify profiles, services, and data types in a Generic Attribute (GATT) profile. 
+# For efficiency, the Bluetooth® Low Energy (BLE) specification adds support for shortened 16-bit UUIDs
 class BLE_device_instance (object):
     BLE_CMD_SERVICE_UUID = "45420100-0000-ffff-ff45-415241424c45"
     BLE_CMD_RX_CHAR_UUID = "45420101-0000-ffff-ff45-415241424c45"

@@ -50,12 +50,20 @@ class AutoSleepScoring():
         
         
     def process_raw_epoch_samples(self, lf5_fpz, otel_fpz, bel_fpz, rf6_fpz, oter_fpz, ber_fpz, fs):
+        # epoch_length = 30 seconds, fs = 125 Hz => num_samples_expected = 30*125 = 3750
         num_samples_expected = int(self.epoch_length*fs)
         
         # Get the last 30 seconds and 2-min of data for each channel (or, if data has only
         # been acquired for X minutes,  and X is less than 2, then use X minutes of data).
         # LF5
+        # Resample the data to the expected number of samples
         lf5_epoch_data = scipy.signal.resample(lf5_fpz, num=num_samples_expected)
+        # If the historical data buffer is not full, append the resampled data to the buffer.
+        # Otherwise, shift the buffer by one epoch and replace the last epoch with the resampled data.
+        # This way, the buffer always contains the last 2 minutes of data.
+        # The buffer is used to calculate the EMG features.
+        # The EMG features are used to determine if the EMG data is noisy.
+        # epochs_per_emg_window = 4, so the buffer will contain the last 2 minutes of data.
         if len(self.lf5_fpz_hist) < self.epochs_per_emg_window:
             self.lf5_fpz_hist.append(np.array(lf5_epoch_data))
         else:
@@ -109,16 +117,26 @@ class AutoSleepScoring():
                                rf6_epoch_data, rf6_window_data, \
                                oter_epoch_data, oter_window_data, \
                                ber_epoch_data, ber_window_data, fs):
-        lf5_noisy = 1
-        otel_noisy = 1
-        bel_noisy = 1
-        rf6_noisy = 1
-        oter_noisy = 1
-        ber_noisy = 1
+        # lf5_noisy = 1
+        # otel_noisy = 1
+        # bel_noisy = 1
+        # rf6_noisy = 1
+        # oter_noisy = 1
+        # ber_noisy = 1
+        lf5_noisy = 0
+        otel_noisy = 0
+        bel_noisy = 0
+        rf6_noisy = 0
+        oter_noisy = 0
+        ber_noisy = 0
         
         # Determine if the BE channels are suitable for re-referencing.
         bel_noisy = is_epoch_signal_bad(bel_epoch_data, fs)
         ber_noisy = is_epoch_signal_bad(ber_epoch_data, fs)
+
+        # added for testing
+        bel_noisy = 0
+        ber_noisy = 0
        
         # If A1/A2 re-reference locations (i.e., BE-L/BE-R) are noisy, do not perform
         # re-referencing, otherwise, proceed with re-referencing.
@@ -146,6 +164,11 @@ class AutoSleepScoring():
         otel_noisy = is_epoch_signal_bad(otel_epoch_data, fs)
         rf6_noisy = is_epoch_signal_bad(rf6_epoch_data, fs)
         oter_noisy = is_epoch_signal_bad(oter_epoch_data, fs)
+        #  added to skip noisy channel testing
+        lf5_noisy = 0
+        otel_noisy = 0
+        rf6_noisy = 0
+        oter_noisy = 0
         
         rereferenced_epochs = [lf5_epoch_data, otel_epoch_data, bel_epoch_data, \
                                rf6_epoch_data, oter_epoch_data, ber_epoch_data]
@@ -187,15 +210,23 @@ class AutoSleepScoring():
             if self.highpass_filter:
                 channel_epoch_data = butter_highpass_filter(channel_epoch_data, 0.3, fs, order=1)
                 channel_window_data = butter_highpass_filter(channel_window_data, 0.3, fs, order=1)
-            
+            # amplitude clippping, max amplitude = 500 uV, min amplitude = -500 uV
             epoch_data = clip_signal(channel_epoch_data)
             window_data = clip_signal(channel_window_data)
 
+            # preprocessing iir bandpass filter frequency band [1,20] Hz
+            # frequency band [0.3,10] Hz for eog, notch filter 60, and butter_highpass_filter 20 Hz for emg
             eeg = preprocess_eeg(epoch_data, fs)
             eog = preprocess_eog(epoch_data, fs)
             emg = preprocess_emg(epoch_data, fs)
             emg_window = preprocess_emg(window_data, fs)
 
+            # feature_extraction.py, compute_sleep_scoring_eeg_features
+            # compute_psd_windows, compute_band_power_ratios, median, mean, std, min, max, mean absolute value, z-ratio, entropy
+            # features = bp_features + bp_ratio_features + statistical_features + z_ratio_features + entropy_features
+            # compute_eog_features: compute psd windws and 60% and 90% percentile of the power in the 0.3-10 Hz band
+            # features = max_deflection + percentile_features + velocity_features...
+            # compute_emg_features: compute psd windows and 60% and 90% percentile of the power in the 10-100 Hz band
             eeg_features = list(compute_sleep_scoring_eeg_features(eeg, fs))
             eog_features = list(compute_eog_features(eog, fs))
             emg_features, bp_curr = get_emg_epoch_features(emg, emg_window, self.bp_prevs[ch_idx], fs)
@@ -208,6 +239,7 @@ class AutoSleepScoring():
                               np.cos((self.current_epoch*np.pi)/90), np.cos((self.current_epoch*np.pi)/120), np.cos((self.current_epoch*np.pi)/150)]
 
             concat_feature_vector = np.concatenate((eeg_features, eog_features, emg_features, time_embedding))
+            # extract_spectrogram, compute spectrogram of the signal, truncate to 50 Hz
             spectrogram = extract_spectrogram(eeg, fs, truncate_to_50hz=True)
 
             # Update the sequential feature buffer in FIFO fashion

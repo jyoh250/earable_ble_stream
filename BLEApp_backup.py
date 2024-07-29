@@ -17,9 +17,6 @@ from Experiment import Experiment
 from utils.signal_processing import notch_filter, butter_bandpass_lfilter, base_filter, preprocess_sqc_data
 from utils.channel_selection import is_signal_noisy
 from sleep_scoring.auto_sleep_scoring import AutoSleepScoring
-import matplotlib
-#  for remote polottin
-matplotlib.use('TkAgg')
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Button
 
@@ -46,20 +43,11 @@ def short_term_sqc(sqc_window_stride_s=3, sqc_window_len_s=3):
     while data_is_processing:
         new_sqc_samples = experiment.eeg_data_size - old_sqc_data_len 
         # Perform Signal Quality Analysis
-        # if the number of new samples is greater than the window stride, and the total number of samples is greater than the window length
-        # then get the last window of data, preprocess it, and check the signal quality
-        # if the signal quality is bad, then set the signal quality to 0, otherwise set it to 1
-        # print the signal qualities
         if (new_sqc_samples >= int(sqc_window_stride_s*eeg_sampling_rate)) and (experiment.eeg_data_size >= int(sqc_window_len_s*eeg_sampling_rate)):
             lf5_window = np.array(experiment.eeg_data[experiment.eeg_data_size-int(sqc_window_len_s*eeg_sampling_rate):experiment.eeg_data_size,0])
             lf5_window = lf5_window-np.mean(lf5_window)
             lf5_window = preprocess_sqc_data(base_filter(lf5_window, eeg_sampling_rate), eeg_sampling_rate)
-            # if the signal is noisy or the absolute value of the signal is greater than 100, then set the signal quality to 0, otherwise set it to 1
-            # lf5_signal_quality = 0 if (is_signal_noisy(lf5_window, eeg_sampling_rate) or np.any(np.abs(lf5_window > 100))) else 1
-            #  why signal quality is set to 0 if the signal is noisy or the absolute value of the signal is greater than 100?
-            # data_size: the array size of collected signal data
-            #  rf6_windws: the last window of data for rf6
-            # 
+
             rf6_window = np.array(experiment.eeg_data[experiment.eeg_data_size-int(sqc_window_len_s*eeg_sampling_rate):experiment.eeg_data_size,3])
             rf6_window = rf6_window-np.mean(rf6_window)
             rf6_window = preprocess_sqc_data(base_filter(rf6_window, eeg_sampling_rate), eeg_sampling_rate)
@@ -84,11 +72,8 @@ def short_term_sqc(sqc_window_stride_s=3, sqc_window_len_s=3):
 def score_sleep():
     t0 = time.time()
     scorer = AutoSleepScoring()
-    # eeg_sampling_rate = 250, 10*250 = 2500
     samples_per_epoch = int(10*eeg_sampling_rate)
-    # eeg_data_size = 693...., 1000
     old_exg_data_len = experiment.eeg_data_size
-    print('Scoring sleep stages...')
     while data_is_processing:
         new_exg_samples = experiment.eeg_data_size - old_exg_data_len
         if (new_exg_samples >= samples_per_epoch):
@@ -97,11 +82,9 @@ def score_sleep():
             old_exg_data_len = experiment.eeg_data_size
             lf5_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,0])
             otel_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,1])
-            # remove bel_epoch, and ber_epoch
             bel_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,2])
             rf6_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,3])
             oter_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,4])
-            # remove bel_epoch, and ber_epoch
             ber_epoch = np.array(experiment.eeg_data[old_exg_data_len-samples_per_epoch:old_exg_data_len,5])
             inferred_sleep_stage, aggregated_sleep_stage_confs = scorer.score_epoch(lf5_epoch, otel_epoch, bel_epoch,\
                                                                                     rf6_epoch, oter_epoch, ber_epoch, eeg_sampling_rate)
@@ -127,9 +110,6 @@ def ble_initializer(address):
 def switch_eeg_channel(event):
     global eeg_channel_index
     eeg_channel_index = (eeg_channel_index+1)%num_eeg_channels
-    #  skip channel 2 and 5
-    if eeg_channel_index == 2 or eeg_channel_index == 5:
-        eeg_channel_index = (eeg_channel_index+1)%num_eeg_channels
     
 def exit_signal_handler(sig, frame):
     global expected_sequence_number, DATA_SAVED
@@ -194,13 +174,11 @@ expected_sequence_number = None
 DATA_SAVED = False
 data_is_processing = True
 
-# fig = plt.figure()
-# ax = fig.add_subplot(111)
-fig, axs = plt.subplots(2, 2)
-# axbutton = plt.axes([0.91, 0.5, 0.075, 0.075])
-# button = Button(axbutton, 'CH')
-# button.on_clicked(switch_eeg_channel)
-#  eeg_sampling_rate = 250, visualization_timescale = 15, 3750 
+fig = plt.figure()
+ax = fig.add_subplot(111)
+axbutton = plt.axes([0.91, 0.5, 0.075, 0.075])
+button = Button(axbutton, 'CH')
+button.on_clicked(switch_eeg_channel)
 x_plotting = np.arange(0, int(eeg_sampling_rate*visualization_timescale))
 y_plotting = np.zeros_like(x_plotting)
 
@@ -237,11 +215,11 @@ if __name__== '__main__':
     init_thread.start()
     
     # Start signal quality check thread
-    # sqc_thread = threading.Thread(name='signal_quality_check', target=short_term_sqc)
-    # sqc_thread.start()
+    sqc_thread = threading.Thread(name='signal_quality_check', target=short_term_sqc)
+    sqc_thread.start()
     
     # Start any specified applications
-    # sleep_scoring_thread = None
+    sleep_scoring_thread = None
     # smart_alarm_thread = None
     # if args.smart_alarm:
     #     args.score_sleep = True
@@ -264,14 +242,9 @@ if __name__== '__main__':
             continue
         else:
             # Get oldest, unprocessed binary packet data and process it
-            # size of packet_data = 24, seq_num = 1, num_eeg_channels = 6,1byte, timestamp = 4bytes, 6*3bytes = 18 => 24 bytes
-            # the packet_data is the raw data from the EEG device
             packet_data = Ble_stack.raw_eeg_data.pop(0)
             pc_packet_timestamp = Ble_stack.raw_eeg_pc_timestamps.pop(0)
             timestamp, seq_num, channel_data = Ble_stack.get_data_from_eeg_binary_packet(packet_data)
-            # channel_data is the EEG data from the EEG device, and 18bytes of data
-            # why seq_num+1%256: because the seq_num is 0-255, so the next seq_num is 1-256
-            # channel_data: 6 channels of EEG data, 1d array includes 6 channels and 9series of data
             if expected_sequence_number is None:
                 experiment.add_eeg_data(channel_data, pc_packet_timestamp, timestamp)
                 expected_sequence_number = (seq_num+1)%256
@@ -285,12 +258,6 @@ if __name__== '__main__':
                     
             if VISUALIZATION_ON:
                 # Get collection of user events to display
-                # get the current time
-                # get the packet timestamp
-                # get the recent events from the experiment object
-                # if the recent events is not empty, get the recent events that are within the visualization_timescale
-                # get the recent event indices
-                # recent_event_inds is the recent event indices
                 plotting_time = pc_packet_timestamp
                 recent_events = np.array(experiment.event_timestamps)
                 if len(recent_events) > 0:
@@ -304,42 +271,33 @@ if __name__== '__main__':
                 if data_for_filtering is None:
                     data_for_filtering = np.array(channel_data)
                 else:
-                    data_for_filtering = np.vstack([data_for_filtering, np.array(channel_data)]) # add the new data to the data_for_filtering 
-                #  whay 9? because the data_for_filtering is the data that is collected from the EEG device and the data is 9 series
+                    data_for_filtering = np.vstack([data_for_filtering, np.array(channel_data)])
                 if data_for_filtering.shape[0] > 9:
                     for channel_i in range(num_eeg_channels):
                         filtered_data[channel_i] += list(eeg_channel_filters[channel_i].filter_data(data_for_filtering[:,channel_i]))
                     data_for_filtering = None
                 
                 # Plot data
-                # make 4 figures to display the EEG data from the 4 channels
-                selected_channel_data_for = []
-                array_a = [(0,0,0),(1,0,1),(3,1,0),(4,1,1)]
-                for j,k,l in array_a:
-                    selected_channel_data_for = np.array(filtered_data[j])
-                    if (len(selected_channel_data_for) > eeg_sampling_rate):
-                        y_plotting = np.zeros_like(x_plotting)
-                        data_count = min(len(selected_channel_data_for), len(x_plotting))
-                        if data_count > 0:
-                            y_plotting[-1*data_count:] = np.array(selected_channel_data_for[-1*data_count:])
-                        axs[k, l].plot(y_plotting, linewidth=0.5)
-                        axs[k, l].set_title(eeg_channel_names[j])
-                        axs[k, l].set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
-                        axs[k, l].set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
-                        axs[k, l].set_ylabel('uV')
-                        axs[k, l].grid()
-                        plt.draw()
-                        # plt.pause(1e-20)
-                        # axs[i, j].clear()
+                selected_channel_data = np.array(filtered_data[eeg_channel_index])
+                if (len(selected_channel_data) > eeg_sampling_rate):
+                    y_plotting = np.zeros_like(x_plotting)
+                    data_count = min(len(selected_channel_data), len(x_plotting))
+                    if data_count > 0:
+                        y_plotting[-1*data_count:] = np.array(selected_channel_data[-1*data_count:])
+                    ax.plot(y_plotting, linewidth=0.5)
+                    for ind, ID in recent_event_inds:
+                        ax.vlines([ind], eeg_display_amplitudes[0], eeg_display_amplitudes[1], color=event_colors[ID])
+                    ax.set_title(eeg_channel_names[eeg_channel_index])
+                    ax.set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
+                    ax.set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
+                    ax.set_ylabel('uV')
+                    ax.grid()
+                    plt.draw()
+                    plt.pause(1e-20)
+                    ax.clear()
 
- 
-                plt.pause(1e-20)
-                axs[0, 0].clear()
-                axs[0, 1].clear()
-                axs[1, 0].clear()
-                axs[1, 1].clear()
-                for channel_i in range(num_eeg_channels):
-                    filtered_data[channel_i] = filtered_data[channel_i][max(0,len(filtered_data[channel_i])-len(x_plotting)):]
+                    for channel_i in range(num_eeg_channels):
+                        filtered_data[channel_i] = filtered_data[channel_i][max(0,len(filtered_data[channel_i])-len(x_plotting)):]
         
         current_time = time.time()
         if current_time-clock > data_save_frequency:
@@ -349,88 +307,3 @@ if __name__== '__main__':
 
     init_thread.join()
     sys.exit('Exiting')
-
-
-# saved codes for figure plotting
-                # selected_channel_data = np.array(filtered_data[eeg_channel_index])
-                # if (len(selected_channel_data) > eeg_sampling_rate):
-                #     y_plotting = np.zeros_like(x_plotting)
-                #     data_count = min(len(selected_channel_data), len(x_plotting))
-                #     if data_count > 0:
-                #         y_plotting[-1*data_count:] = np.array(selected_channel_data[-1*data_count:])
-                #     ax.plot(y_plotting, linewidth=0.5)
-                #     for ind, ID in recent_event_inds:
-                #         ax.vlines([ind], eeg_display_amplitudes[0], eeg_display_amplitudes[1], color=event_colors[ID])
-                #     ax.set_title(eeg_channel_names[eeg_channel_index])
-                #     ax.set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
-                #     ax.set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
-                #     ax.set_ylabel('uV')
-                #     ax.grid()
-                #     plt.draw()
-                #     plt.pause(1e-20)
-                #     ax.clear()
-                # ========================================================================================================
-                # selected_channel_data1 = np.array(filtered_data[0])
-                # selected_channel_data2 = np.array(filtered_data[1])
-                # selected_channel_data3 = np.array(filtered_data[3])
-                # selected_channel_data4 = np.array(filtered_data[4])
-                # if (len(selected_channel_data1) > eeg_sampling_rate):
-                #     y_plotting = np.zeros_like(x_plotting)
-                #     data_count = min(len(selected_channel_data1), len(x_plotting))
-                #     if data_count > 0:
-                #         y_plotting[-1*data_count:] = np.array(selected_channel_data1[-1*data_count:])
-                #     axs[0, 0].plot(y_plotting, linewidth=0.5)
-                #     axs[0, 0].set_title(eeg_channel_names[0])
-                #     axs[0, 0].set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
-                #     axs[0, 0].set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
-                #     axs[0, 0].set_ylabel('uV')
-                #     axs[0, 0].grid()
-                #     plt.draw()
-                #     # plt.pause(1e-20)
-                #     # axs[0, 0].clear()
-
-                # if (len(selected_channel_data2) > eeg_sampling_rate):
-                #     y_plotting = np.zeros_like(x_plotting)
-                #     data_count = min(len(selected_channel_data2), len(x_plotting))
-                #     if data_count > 0:
-                #         y_plotting[-1*data_count:] = np.array(selected_channel_data2[-1*data_count:])
-                #     axs[0, 1].plot(y_plotting, linewidth=0.5)
-                #     axs[0, 1].set_title(eeg_channel_names[1])
-                #     axs[0, 1].set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
-                #     axs[0, 1].set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
-                #     axs[0, 1].set_ylabel('uV')
-                #     axs[0, 1].grid()
-                #     plt.draw()
-                #     # plt.pause(1e-20)
-                #     # axs[0, 1].clear()
-
-                # if (len(selected_channel_data3) > eeg_sampling_rate):
-                #     y_plotting = np.zeros_like(x_plotting)
-                #     data_count = min(len(selected_channel_data3), len(x_plotting))
-                #     if data_count > 0:
-                #         y_plotting[-1*data_count:] = np.array(selected_channel_data3[-1*data_count:])
-                #     axs[1, 0].plot(y_plotting, linewidth=0.5)
-                #     axs[1, 0].set_title(eeg_channel_names[3])
-                #     axs[1, 0].set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
-                #     axs[1, 0].set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
-                #     axs[1, 0].set_ylabel('uV')
-                #     axs[1, 0].grid()
-                #     plt.draw()
-                #     # plt.pause(1e-20)
-                #     # axs[1, 0].clear()
-                # if (len(selected_channel_data4) > eeg_sampling_rate):
-                #     y_plotting = np.zeros_like(x_plotting)
-                #     data_count = min(len(selected_channel_data4), len(x_plotting))
-                #     if data_count > 0:
-                #         y_plotting[-1*data_count:] = np.array(selected_channel_data4[-1*data_count:])
-                #     axs[1, 1].plot(y_plotting, linewidth=0.5)
-                #     axs[1, 1].set_title(eeg_channel_names[4])
-                #     axs[1, 1].set_ylim([eeg_display_amplitudes[0], eeg_display_amplitudes[1]])
-                #     axs[1, 1].set_yticks(np.arange(eeg_display_amplitudes[0], eeg_display_amplitudes[1]+50, 50))
-                #     axs[1, 1].set_ylabel('uV')
-                #     axs[1, 1].grid()
-                #     plt.draw()
-                #     # plt.pause(1e-20)
-                #     # axs[1, 1].clear()
-
-                # plt.draw()
