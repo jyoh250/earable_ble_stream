@@ -8,6 +8,8 @@
 #  May need to adjust the code if the data format is different.
 #  to make more accurate, refer to below link
 #  https://github.com/ElliotY-ML/Heart_Rate_Estimation_PPG_Acc/blob/master/Part%20I%20Pulse%20Rate%20Algorithm/pulse_rate_EY_completed.ipynb
+#  https://python-heart-rate-analysis-toolkit.readthedocs.io/en/latest/
+#  https://neuropsychology.github.io/NeuroKit/functions/ppg.html
 
 import serial
 import time
