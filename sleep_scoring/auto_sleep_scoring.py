@@ -13,7 +13,8 @@ class AutoSleepScoring():
     model_path = './sleep_scoring/model_files/auto_sleep_scoring_model_ep_rnn_v2.6.2.tflite'
     feature_means_fpath = './sleep_scoring/model_files/feature_train_means.npy'
     feature_stds_fpath = './sleep_scoring/model_files/feature_train_stds.npy'
-    epoch_length = 30
+    # may be changed 30 to 10 according to the BLEApp.py file
+    epoch_length = 10
     rnn_seq_len = 8
     SLEEP_STAGE_MAP = {0: 'Wake', 1: 'Light Sleep', 2: 'Deep Sleep', 3: 'REM', -1: 'Unknown'}
     num_sleep_stages = 4
@@ -45,25 +46,25 @@ class AutoSleepScoring():
         self.ber_fpz_hist = []
         
         self.current_epoch = 0
-        
+        # the number of data collected in the buffer for each channel is 4*epoch_length, 4*10 = 40 seconds
         self.epochs_per_emg_window = 4
         
         
     def process_raw_epoch_samples(self, lf5_fpz, otel_fpz, bel_fpz, rf6_fpz, oter_fpz, ber_fpz, fs):
         # epoch_length = 30 seconds, fs = 125 Hz => num_samples_expected = 30*125 = 3750
+        # chaned epoch_length to 10 to match the BLEApp.py file, 10*125 = 1250samples
         num_samples_expected = int(self.epoch_length*fs)
         
-        # Get the last 30 seconds and 2-min of data for each channel (or, if data has only
-        # been acquired for X minutes,  and X is less than 2, then use X minutes of data).
-        # LF5
+        # Get the last 10 seconds and 40 seconds of data for each channel (or, if data has only
+        # been acquired for X minutes,  and X is less than 40sec, then use X minutes of data).
         # Resample the data to the expected number of samples
         lf5_epoch_data = scipy.signal.resample(lf5_fpz, num=num_samples_expected)
         # If the historical data buffer is not full, append the resampled data to the buffer.
         # Otherwise, shift the buffer by one epoch and replace the last epoch with the resampled data.
-        # This way, the buffer always contains the last 2 minutes of data.
+        # This way, the buffer always contains the last 40sec of data.
         # The buffer is used to calculate the EMG features.
         # The EMG features are used to determine if the EMG data is noisy.
-        # epochs_per_emg_window = 4, so the buffer will contain the last 2 minutes of data.
+        # epochs_per_emg_window = 4, so the buffer will contain the last 40sec of data.
         if len(self.lf5_fpz_hist) < self.epochs_per_emg_window:
             self.lf5_fpz_hist.append(np.array(lf5_epoch_data))
         else:
@@ -235,6 +236,19 @@ class AutoSleepScoring():
             if not noisy_channels[ch_idx] or self.bp_prevs[ch_idx] is not None:
                 self.bp_prevs[ch_idx] = bp_curr
 
+            # time_embedding is a 6 element array, where
+            # time_embedding[0] = current_epoch/1200,  time_embedding[1] = cos((current_epoch*pi)/30) ...
+            # what is this process for? what is the purpose of this time_embedding?
+            # time_embedding is used to embed the current epoch number into a 6-dimensional feature vector
+            # to provide the model with information about the time of day.
+            # The model uses this information to help predict sleep stages.
+            # what is divisor number, such as 1200, 30,60,90,120,150?
+            # time_embedding[0] = current_epoch/1200, 1200 is the number of epochs in 2 hours
+            # time_embedding[1] = cos((current_epoch*pi)/30), 30 is the number of epochs in 1 minute
+            # time_embedding[2] = cos((current_epoch*pi)/60), 60 is the number of epochs in 2 minutes
+            # time_embedding[3] = cos((current_epoch*pi)/90), 90 is the number of epochs in 3 minutes
+            # time_embedding[4] = cos((current_epoch*pi)/120), 120 is the number of epochs in 4 minutes
+            # time_embedding[5] = cos((current_epoch*pi)/150), 150 is the number of epochs in 5 minutes
             time_embedding = [self.current_epoch/1200, np.cos((self.current_epoch*np.pi)/30), np.cos((self.current_epoch*np.pi)/60), \
                               np.cos((self.current_epoch*np.pi)/90), np.cos((self.current_epoch*np.pi)/120), np.cos((self.current_epoch*np.pi)/150)]
 
