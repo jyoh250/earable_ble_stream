@@ -180,7 +180,16 @@ class BLE_device_instance (object):
             packet_ch_data[2].append(int.from_bytes(packet_data[timestamp_offset+(sample_i*6)+4:timestamp_offset+(sample_i*6)+6], \
                                                     byteorder='big', signed=True)*scaling_factor)
         return timestamp, np.array(packet_ch_data).T
-    
+
+    # The measured light during green exposure contains most of the information on the pulse wave 
+    # (i.e., the heartbeats) and it is typically characterized by a sequence of valleys, 
+    # whose time occurrences are used to estimate the heartbeats. 
+    # Note that the more the blood is oxygenated, the more the light is absorbed. 
+    # Thus, during a heartbeat, there is a high light absorption, 
+    # which is observed as a valley in the light output signal.
+    # The measured light during the red exposure contains a reference light level 
+    # which is used to cancel motion artefacts.
+
     def get_data_from_ppg_binary_packet(self, packet_data, n_channels=3):
         green = 0x80000
         ir = 0x100000
@@ -200,7 +209,13 @@ class BLE_device_instance (object):
                     ir_data.append(int.from_bytes(byte_data, byteorder='big', signed=False) ^ ir)
                 elif ch_indicator == '11':
                     red_data.append(int.from_bytes(byte_data, byteorder='big', signed=False) ^ red)
-        return timestamp, np.array([green_data, ir_data, red_data]).T
+        
+        # Calculate heart rate from PPG data
+        # need to fix this. heart rate can be detected by using extracting the peak of signal 
+        # and then calculating the time difference between peaks
+        heart_rate = len(green_data) / (timestamp / 1000) * 60
+        
+        return timestamp, np.array([green_data, ir_data, red_data]).T, heart_rate
     
     def close(self):
         # Stop BLE data streaming

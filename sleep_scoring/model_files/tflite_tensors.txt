@@ -1,0 +1,63 @@
+Tensor 0: input_1, shape: [ 1 31 65], dtype: <class 'numpy.float32'>
+Tensor 1: seq_input, shape: [ 1  8 38], dtype: <class 'numpy.float32'>
+Tensor 2: functional_1/concat/concat/axis, shape: [], dtype: <class 'numpy.int32'>
+Tensor 3: functional_1/conv2/conv1d/ExpandDims/dim, shape: [], dtype: <class 'numpy.int32'>
+Tensor 4: functional_1/feat_dense1/BiasAdd/ReadVariableOp/resource, shape: [64], dtype: <class 'numpy.float32'>
+Tensor 5: functional_1/flatten/Const, shape: [2], dtype: <class 'numpy.int32'>
+Tensor 6: functional_1/lstm/transpose/perm, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 7: functional_1/lstm/zeros_1/packed/1, shape: [], dtype: <class 'numpy.int32'>
+Tensor 8: functional_1/output/BiasAdd/ReadVariableOp/resource, shape: [4], dtype: <class 'numpy.float32'>
+Tensor 9: functional_1/lstm/TensorArrayV2_1, shape: [2], dtype: <class 'numpy.int32'>
+Tensor 10: functional_1/lstm/TensorArrayV2_11, shape: [], dtype: <class 'numpy.int32'>
+Tensor 11: functional_1/lstm/TensorArrayV2_12, shape: [], dtype: <class 'numpy.float32'>
+Tensor 12: functional_1/bn1/batchnorm/mul, shape: [32], dtype: <class 'numpy.float32'>
+Tensor 13: functional_1/bn1/batchnorm/sub, shape: [32], dtype: <class 'numpy.float32'>
+Tensor 14: functional_1/bn2/batchnorm/mul, shape: [32], dtype: <class 'numpy.float32'>
+Tensor 15: functional_1/bn2/batchnorm/sub, shape: [32], dtype: <class 'numpy.float32'>
+Tensor 16: functional_1/feat_dense1/MatMul, shape: [64 32], dtype: <class 'numpy.float32'>
+Tensor 17: functional_1/output/MatMul, shape: [  4 928], dtype: <class 'numpy.float32'>
+Tensor 18: functional_1/conv1/conv1d, shape: [32  1  3 65], dtype: <class 'numpy.float32'>
+Tensor 19: functional_1/conv2/conv1d, shape: [32], dtype: <class 'numpy.float32'>
+Tensor 20: functional_1/conv2/conv1d1, shape: [32  1  3 32], dtype: <class 'numpy.float32'>
+Tensor 21: functional_1/lstm/strided_slice_1, shape: [1], dtype: <class 'numpy.int32'>
+Tensor 22: functional_1/lstm/TensorArrayV2_13, shape: [1], dtype: <class 'numpy.int32'>
+Tensor 23: functional_1/lstm/strided_slice_3, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 24: functional_1/lstm/strided_slice_31, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 25: functional_1/lstm/strided_slice_32, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 26: functional_1/conv1/conv1d/ExpandDims, shape: [ 1  1 31 65], dtype: <class 'numpy.float32'>
+Tensor 27: functional_1/conv1/Relu;functional_1/conv1/conv1d/Squeeze;functional_1/conv1/conv1d, shape: [ 1  1 29 32], dtype: <class 'numpy.float32'>
+Tensor 28: functional_1/conv1/Relu;functional_1/conv1/conv1d/Squeeze, shape: [ 1 29 32], dtype: <class 'numpy.float32'>
+Tensor 29: functional_1/bn1/batchnorm/mul_1, shape: [ 1 29 32], dtype: <class 'numpy.float32'>
+Tensor 30: functional_1/bn1/batchnorm/add_1, shape: [ 1 29 32], dtype: <class 'numpy.float32'>
+Tensor 31: functional_1/conv2/conv1d/ExpandDims, shape: [ 1  1 29 32], dtype: <class 'numpy.float32'>
+Tensor 32: functional_1/conv2/Relu;functional_1/conv2/conv1d/Squeeze;functional_1/conv2/conv1d, shape: [ 1  1 27 32], dtype: <class 'numpy.float32'>
+Tensor 33: functional_1/conv2/Relu;functional_1/conv2/conv1d/Squeeze, shape: [ 1 27 32], dtype: <class 'numpy.float32'>
+Tensor 34: functional_1/bn2/batchnorm/mul_1, shape: [ 1 27 32], dtype: <class 'numpy.float32'>
+Tensor 35: functional_1/bn2/batchnorm/add_1, shape: [ 1 27 32], dtype: <class 'numpy.float32'>
+Tensor 36: functional_1/flatten/Reshape, shape: [  1 864], dtype: <class 'numpy.float32'>
+Tensor 37: functional_1/lstm/Shape, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 38: functional_1/lstm/strided_slice, shape: [], dtype: <class 'numpy.int32'>
+Tensor 39: functional_1/lstm/zeros/packed, shape: [2], dtype: <class 'numpy.int32'>
+Tensor 40: functional_1/lstm/zeros, shape: [ 1 32], dtype: <class 'numpy.float32'>
+Tensor 41: functional_1/lstm/transpose, shape: [ 8  1 38], dtype: <class 'numpy.float32'>
+Tensor 42: functional_1/lstm/Shape_1, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 43: functional_1/lstm/strided_slice_11, shape: [], dtype: <class 'numpy.int32'>
+Tensor 44: functional_1/lstm/TensorArrayV2_14, shape: [1], dtype: <class 'numpy.int32'>
+Tensor 45: functional_1/lstm/TensorArrayV2_15, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 46: functional_1/lstm/TensorArrayV2_16, shape: [1 1 1], dtype: <class 'numpy.float32'>
+Tensor 47: functional_1/lstm/while, shape: [], dtype: <class 'numpy.int32'>
+Tensor 48: functional_1/lstm/while1, shape: [], dtype: <class 'numpy.int32'>
+Tensor 49: functional_1/lstm/while2, shape: [1 1 1], dtype: <class 'numpy.float32'>
+Tensor 50: functional_1/lstm/while3, shape: [ 1 32], dtype: <class 'numpy.float32'>
+Tensor 51: functional_1/lstm/while4, shape: [ 1 32], dtype: <class 'numpy.float32'>
+Tensor 52: functional_1/lstm/while5, shape: [], dtype: <class 'numpy.int32'>
+Tensor 53: functional_1/lstm/while6, shape: [ 8  1 38], dtype: <class 'numpy.float32'>
+Tensor 54: functional_1/lstm/TensorArrayV2Stack/TensorListStack, shape: [3], dtype: <class 'numpy.int32'>
+Tensor 55: functional_1/lstm/TensorArrayV2Stack/TensorListStack1, shape: [1 1 1], dtype: <class 'numpy.float32'>
+Tensor 56: functional_1/lstm/strided_slice_33, shape: [1 1], dtype: <class 'numpy.float32'>
+Tensor 57: functional_1/feat_dense1/Relu;functional_1/feat_dense1/BiasAdd, shape: [ 1 64], dtype: <class 'numpy.float32'>
+Tensor 58: functional_1/concat/concat, shape: [  1 928], dtype: <class 'numpy.float32'>
+Tensor 59: functional_1/output/BiasAdd, shape: [1 4], dtype: <class 'numpy.float32'>
+Tensor 60: Identity, shape: [1 4], dtype: <class 'numpy.float32'>
+Tensor 61: , shape: [195  32], dtype: <class 'numpy.float32'>
+Tensor 62: , shape: [96 32], dtype: <class 'numpy.float32'>
