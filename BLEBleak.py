@@ -115,7 +115,7 @@ class BLE_device_instance (object):
 
     def eeg_notification_handler(self, sender, data):
         global counter, starttime
-        #received_data = self.hexPrint(data)
+        # received_data = self.hexPrint(data)
         # print("EEG DATA: ", received_data)
         # print('EEG DATA LENGTH: ', len(data))
         self.raw_eeg_pc_timestamps.append(time.time())
@@ -135,7 +135,7 @@ class BLE_device_instance (object):
         self.raw_imu_data.append(np.array(data))
 
     def ppg_notification_handler(self, sender, data):
-        #received_data = self.hexPrint(data)
+        # received_data = self.hexPrint(data)
         # print("PPG DATA: ", received_data)
         # print('PPG DATA LENGTH: ', len(data))
         self.raw_ppg_pc_timestamps.append(time.time())
@@ -214,7 +214,7 @@ class BLE_device_instance (object):
         # need to fix this. heart rate can be detected by using extracting the peak of signal 
         # and then calculating the time difference between peaks
         heart_rate = len(green_data) / (timestamp / 1000) * 60
-        
+        # print('Heart rate: ', heart_rate)
         return timestamp, np.array([green_data, ir_data, red_data]).T, heart_rate
     
     def close(self):

@@ -84,8 +84,8 @@ def short_term_sqc(sqc_window_stride_s=3, sqc_window_len_s=3):
 def score_sleep():
     t0 = time.time()
     scorer = AutoSleepScoring()
-    # eeg_sampling_rate = 250, 10*250 = 2500
-    samples_per_epoch = int(10*eeg_sampling_rate)
+    # eeg_sampling_rate = 125, 10*125 = 1250
+    samples_per_epoch = int(2*eeg_sampling_rate)
     # eeg_data_size = 693...., 1000
     old_exg_data_len = experiment.eeg_data_size
     print('Scoring sleep stages...')
@@ -109,6 +109,12 @@ def score_sleep():
             print('Fatigue Stage Confidences: {}'.format(aggregated_sleep_stage_confs))
             print()
     return np.array(scorer.inferred_stages), np.array(scorer.sleep_stage_confs)
+
+# binaural beats are responses that are invoked in one’s brain as a result 
+# from hearing auditory impulses of different frequencies in each ear. 
+# Specifically, the brainstem responses that are invoked, 
+# originate from the superior olivary nucleus of each brain hemisphere. 
+# They are heard as apparent sounds.
 
 # def binaural_beats_test(frequency):
 #     nostim_timestamps_fpath = os.path.join(experiment_id_data_path, 'nostim_audio_timestamps.npy')
@@ -260,6 +266,7 @@ if __name__== '__main__':
     filtered_data = [[] for _ in range(num_eeg_channels)]
     data_for_filtering = None
     while True:
+        # add for ppg data processing
         if len(Ble_stack.raw_eeg_data) == 0:
             continue
         else:
@@ -269,6 +276,16 @@ if __name__== '__main__':
             packet_data = Ble_stack.raw_eeg_data.pop(0)
             pc_packet_timestamp = Ble_stack.raw_eeg_pc_timestamps.pop(0)
             timestamp, seq_num, channel_data = Ble_stack.get_data_from_eeg_binary_packet(packet_data)
+            # ppg data procesing
+            if len(Ble_stack.raw_ppg_data) != 0:
+                packet_data_ppg = Ble_stack.raw_ppg_data.pop(0)
+                pc_packet_timestamp_ppg = Ble_stack.raw_ppg_pc_timestamps.pop(0)
+                timestamp_ppg, data_ppg, hr_rate = Ble_stack.get_data_from_ppg_binary_packet(packet_data_ppg)
+                # ppg data processing
+                # need to add hr_rate to the experiment object
+                experiment.add_ppg_data(data_ppg, timestamp_ppg)
+
+
             # channel_data is the EEG data from the EEG device, and 18bytes of data
             # why seq_num+1%256: because the seq_num is 0-255, so the next seq_num is 1-256
             # channel_data: 6 channels of EEG data, 1d array includes 6 channels and 9series of data
@@ -282,7 +299,7 @@ if __name__== '__main__':
                 else:
                     experiment.add_eeg_data(channel_data, pc_packet_timestamp, timestamp)
                     expected_sequence_number = (expected_sequence_number+1)%256
-                    
+            
             if VISUALIZATION_ON:
                 # Get collection of user events to display
                 # get the current time

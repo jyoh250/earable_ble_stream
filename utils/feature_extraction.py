@@ -50,11 +50,18 @@ def compute_band_powers(datum, fs, bands=[0.5,4,8,13], normalize=True):
 
     fft_datum = np.abs(fft(datum))
     freqs = fftfreq(len(datum),1/fs)
+    #  0 <= freqs <= fs/2, only take the positive and fs/2 part
     indice = np.bitwise_and(freqs<=(fs/2.), freqs>=0)
+    #  only take the positive and fs/2 part data and freqs
     fft_datum = fft_datum[indice]
     freqs = freqs[indice]
+    # calculate the total power of the signal
+    # the total_power size is the same as the freqs size
     total_pow = simps(fft_datum,freqs)
 
+    # MIN_FFT_MAG = 1e-7
+    # calculate the band power of each frequency band
+    # the size of bp is the same as the bands size
     bp = []
     for idx in range(1,len(bands)):
         indice = np.bitwise_and(freqs<=bands[idx], freqs>=bands[idx-1])
@@ -122,15 +129,23 @@ def compute_psd_windows(datum, fs, window_length=10, window_stride=5, bands=[0.5
         bandpower - 2D array of bandpower computations.  bandpower[i,j] gives the
         normalized PSD of the jth frequency band in signal interval i.
     '''
+    # fs=eeg_sampling_rate = 125, samples_per_window = 125*10 = 1250
+    # stride = 125*5 = 625
+    # datum.size = 1250
     samples_per_window = int(fs*window_length)
     stride = int(fs*window_stride)
     
+    #  i= 0, 625, 1250
+    #  i+samples_per_window = 1250, 1875, 2500
+    #  len(datum) = 1250
+    #  i+samples_per_window > len(datum) = False => not working in the loop
     i = 0
     bandpower = []
     for i in range(0,len(datum),stride):
         if i+samples_per_window > len(datum):
             break
         signal_segment = datum[i:i+samples_per_window]
+        # signal_segment size is: 1250
         psds = compute_band_powers(signal_segment, fs, bands, normalize)
         bandpower.append(psds)
         
@@ -234,7 +249,11 @@ def compute_eog_features(eog_datum, fs):
     max_deflection = np.max(deflection)
     percentile_60_deflection = np.percentile(deflection, 60)
     percentile_90_deflection = np.percentile(deflection, 90)
-    low_power_eog, high_power_eog = list(compute_psd_windows(eog_datum, fs, window_length=30, window_stride=30, bands=[0.3,4,10]).flatten())
+    #  not enough values
+    # low_power_eog, high_power_eog = list(compute_psd_windows(eog_datum, fs, window_length=30, window_stride=30, bands=[0.3,4,10]).flatten())
+    #  too many values (windows_length=6, windows_stride=3)
+    # 
+    low_power_eog, high_power_eog = list(compute_psd_windows(eog_datum, fs, window_length=8, window_stride=4, bands=[0.3,4,10]).flatten())
 
     features = []
     features += [max_deflection, percentile_60_deflection, percentile_90_deflection]
