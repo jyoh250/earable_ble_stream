@@ -47,21 +47,25 @@ def compute_band_powers(datum, fs, bands=[0.5,4,8,13], normalize=True):
     '''
     freq_low = bands[0]
     freq_high = bands[-1]
-
+    # fft_datum size is 1250
+    # freqs size is 1250
     fft_datum = np.abs(fft(datum))
     freqs = fftfreq(len(datum),1/fs)
     #  0 <= freqs <= fs/2, only take the positive and fs/2 part
+    # indice size is 625
     indice = np.bitwise_and(freqs<=(fs/2.), freqs>=0)
     #  only take the positive and fs/2 part data and freqs
     fft_datum = fft_datum[indice]
+    # freqs size is 625
     freqs = freqs[indice]
     # calculate the total power of the signal
-    # the total_power size is the same as the freqs size
+    # the total_power size is 1
     total_pow = simps(fft_datum,freqs)
 
     # MIN_FFT_MAG = 1e-7
     # calculate the band power of each frequency band
     # the size of bp is the same as the bands size
+    # bp size is 3 (bands size is 4)
     bp = []
     for idx in range(1,len(bands)):
         indice = np.bitwise_and(freqs<=bands[idx], freqs>=bands[idx-1])
@@ -132,6 +136,10 @@ def compute_psd_windows(datum, fs, window_length=10, window_stride=5, bands=[0.5
     # fs=eeg_sampling_rate = 125, samples_per_window = 125*10 = 1250
     # stride = 125*5 = 625
     # datum.size = 1250
+    # windows_length = 30, stride =30
+    # sample_per_window = 125*30 = 3750
+    # stride = 125*30 = 3750
+    # try windows_length = 8seconds, stride = 4
     samples_per_window = int(fs*window_length)
     stride = int(fs*window_stride)
     
@@ -146,6 +154,7 @@ def compute_psd_windows(datum, fs, window_length=10, window_stride=5, bands=[0.5
             break
         signal_segment = datum[i:i+samples_per_window]
         # signal_segment size is: 1250
+        # the size of psds is 3
         psds = compute_band_powers(signal_segment, fs, bands, normalize)
         bandpower.append(psds)
         
@@ -196,6 +205,11 @@ def compute_sleep_scoring_eeg_features(datum, fs):
     output:
         features: an array of EEG features (the EEG feature vector).
     '''
+    # the size of datum is 1250
+    # the size of features is 38, but actual output size is 34, because the last 4 values are not used
+    # why 4 values are not used?
+    # the size of bp_features=4, bp_ratio_features is 10, statistical_features is 6, z_ratio_features is 1, entropy_features is 1
+    # the size of bp_feature must be 4x5=20, but the actual size is 4x4=16
     bp_features = list(compute_psd_windows(datum, fs, window_length=30, window_stride=30, bands=[2,4,8,13,20]).flatten())
     bp_ratio_features = list(compute_band_power_ratios(datum, fs))
     statistical_features = [np.median(datum), np.mean(datum), np.std(datum), np.min(datum), np.max(datum), np.mean(np.abs(datum))]

@@ -217,6 +217,8 @@ class AutoSleepScoring():
 
             # preprocessing iir bandpass filter frequency band [1,20] Hz
             # frequency band [0.3,10] Hz for eog, notch filter 60, and butter_highpass_filter 20 Hz for emg
+            # the size of epoch_data is 1250, window_data is 5000
+            # the size of output eeg is 1250, eog is 1250, emg is 1250
             eeg = preprocess_eeg(epoch_data, fs)
             eog = preprocess_eog(epoch_data, fs)
             emg = preprocess_emg(epoch_data, fs)
@@ -228,6 +230,8 @@ class AutoSleepScoring():
             # compute_eog_features: compute psd windws and 60% and 90% percentile of the power in the 0.3-10 Hz band
             # features = max_deflection + percentile_features + velocity_features...
             # compute_emg_features: compute psd windows and 60% and 90% percentile of the power in the 10-100 Hz band
+            # the size of input eeg is 1250, eog is 1250, emg is 1250
+            # the size of eeg_features is 34, eog_features is 6, emg_features is 2, time_embedding is 6
             eeg_features = list(compute_sleep_scoring_eeg_features(eeg, fs))
             eog_features = list(compute_eog_features(eog, fs))
             emg_features, bp_curr = get_emg_epoch_features(emg, emg_window, self.bp_prevs[ch_idx], fs)
@@ -251,7 +255,8 @@ class AutoSleepScoring():
             # time_embedding[5] = cos((current_epoch*pi)/150), 150 is the number of epochs in 5 minutes
             time_embedding = [self.current_epoch/1200, np.cos((self.current_epoch*np.pi)/30), np.cos((self.current_epoch*np.pi)/60), \
                               np.cos((self.current_epoch*np.pi)/90), np.cos((self.current_epoch*np.pi)/120), np.cos((self.current_epoch*np.pi)/150)]
-
+            
+            # the size of eeg_features is 34, eog_features is 6, emg_features is 2, time_embedding is 6
             concat_feature_vector = np.concatenate((eeg_features, eog_features, emg_features, time_embedding))
             # extract_spectrogram, compute spectrogram of the signal, truncate to 50 Hz
             spectrogram = extract_spectrogram(eeg, fs, truncate_to_50hz=True)
@@ -259,6 +264,7 @@ class AutoSleepScoring():
             # Update the sequential feature buffer in FIFO fashion
             if self.feature_buffers[ch_idx] is None:
                 # First epoch: we do not have feature history so use repetitions of current feature vector
+                # rnn_seq_len = 8, np.tile(concat_feature_vector, self.rnn_seq_len) = 8*concat_feature_vector
                 self.feature_buffers[ch_idx] = np.tile(concat_feature_vector, self.rnn_seq_len).reshape(self.rnn_seq_len,-1)
             else:
                 # Pop oldest feature vector from the buffer, and append new to end

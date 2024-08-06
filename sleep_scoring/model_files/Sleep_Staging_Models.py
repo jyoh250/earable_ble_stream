@@ -48,6 +48,7 @@ class Sleep_Stage_Model_TFLite():
         spectrogram_input = spectrogram_input.astype(np.float32)
         
         # Scale aggregate feature vector according to the training data distribution
+        # error concat_feature_vector(8:34):, feature_means: (8:38)
         concat_feature_vector = (concat_feature_vector - self.feature_means)/self.feature_stds
         features_input = concat_feature_vector.squeeze()
         features_input = features_input.astype(np.float32)
